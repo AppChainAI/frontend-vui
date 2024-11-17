@@ -51,6 +51,8 @@ function showToast(): void {
         value="cupcake" />
       <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="MyTheme"
         value="mytheme" />
+      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="MyThemeDark"
+        value="mythemeDark" />
     </div>
     <!-- 图标 -->
     <div class="flex items-center justify-center gap-4 flex-wrap p-4 rounded-box border border-base-300">
