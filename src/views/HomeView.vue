@@ -40,7 +40,18 @@ function showToast(): void {
 
 <template>
   <div class="flex flex-col gap-4">
-    <div class="flex items-center justify-center gap-4 flex-wrap">
+    <!-- 主题切换 -->
+    <div class="join join-vertical rounded-box">
+      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Default"
+        value="default" />
+      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Light"
+        value="light" />
+      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Dark" value="dark" />
+      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Cupcake"
+        value="cupcake" />
+    </div>
+    <!-- 图标 -->
+    <div class="flex items-center justify-center gap-4 flex-wrap p-4 rounded-box border border-base-300">
       <IconTooling />
       <IconCommunity />
       <IconSupport />
@@ -50,7 +61,8 @@ function showToast(): void {
     <div class="flex gap-4 flex-wrap">
       <!-- 输入框 -->
       <div class="w-[600px]">
-        <MentionInput v-model="inputValue" :suggestions="options" placeholder="请输入内容" @submit="handleSubmit">
+        <MentionInput v-model="inputValue" :suggestions="options" placeholder="请输入内容" @submit="handleSubmit"
+          class="rounded-btn">
           <div>
             回车键提交
           </div>
@@ -58,7 +70,7 @@ function showToast(): void {
       </div>
       <!-- 按钮,调用 Toast 组件 -->
       <div class="w-[600px]">
-        <button class="bg-blue-500 text-white p-2 rounded-md" @click="showToast">Toast</button>
+        <button class="btn btn-primary rounded-btn" @click="showToast">Toast</button>
       </div>
     </div>
   </div>

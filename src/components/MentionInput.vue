@@ -1,5 +1,5 @@
 <template>
-  <div class="mention-input w-full h-full flex flex-col border border-base-300 shadow p-2 gap-4">
+  <div class="mention-input w-full h-full flex flex-col px-4 py-2 gap-4 input input-bordered">
     <!-- 提示框 -->
     <div v-if="showSuggestions" class="suggestions" :style="suggestionsStyle">
       <div v-for="(item, index) in filteredOptions" :key="item.value" class="suggestion-item"
@@ -11,7 +11,7 @@
     <textarea ref="textareaRef" class="textarea textarea-lg" :placeholder="placeholder" :value="modelValue"
       @input="handleInput" @keydown="handleKeydown" rows="1"></textarea>
     <!-- 扩展工具栏 -->
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between p-2">
       <!-- 扩展工具栏 -->
       <slot></slot>
       <div class="flex items-center gap-2">
