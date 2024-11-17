@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <div class="flex gap-4">
+  <div class="gap-4">
     <!-- Header -->
     <!-- <header class="flex flex-col gap-4 bg-base-100">
       <RouterLink to="/">Home</RouterLink>
