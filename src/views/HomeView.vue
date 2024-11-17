@@ -11,6 +11,8 @@ const options = ref([
   { value: 'apple', label: 'Apple' },
   { value: 'banana', label: 'Banana' }
 ])
+
+const inputValue = ref('')
 </script>
 
 <template>
@@ -23,7 +25,9 @@ const options = ref([
       <DocumentationIcon />
     </div>
     <div class="flex items-center justify-center gap-4 flex-wrap">
-      <MentionInput :options="options" placeholder="请输入内容" />
+      <div class="w-80">
+        <MentionInput v-model="inputValue" :suggestions="options" placeholder="请输入内容" />
+      </div>
     </div>
   </div>
 </template>

@@ -7,8 +7,5 @@
     {
       "path": "./tsconfig.app.json"
     }
-  ],
-  "compilerOptions": {
-    "types": ["./shims-vue.d.ts"]
-  }
+  ]
 }

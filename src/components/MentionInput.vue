@@ -1,85 +1,102 @@
 <template>
-  <div class="mention-input w-full h-full">
+  <div class="mention-input w-full h-full flex flex-col border border-base-300 shadow p-2">
+    <!-- 提示框 -->
     <div v-if="showSuggestions" class="suggestions" :style="suggestionsStyle">
       <div v-for="(item, index) in filteredOptions" :key="item.value" class="suggestion-item"
         :class="{ active: index === activeIndex }" @click="selectSuggestion(item)">
         {{ item.value }} - {{ item.label }}
       </div>
     </div>
+    <!-- 输入框 -->
     <textarea ref="textareaRef" class="textarea textarea-lg" :placeholder="placeholder" :value="modelValue"
       @input="handleInput" @keydown="handleKeydown" rows="1"></textarea>
+    <!-- 扩展工具栏 -->
+    <div class="flex items-center justify-between">
+      <div>
+        osoos
+      </div>
+      <!-- 提交按钮 -->
+      <button class="btn btn-primary">提交</button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
-import type { PropType } from 'vue'
+import { ref, computed, onMounted, watch, nextTick } from 'vue'
 
-// 添加新的 props: maxLines 和 prefix
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: ''
-  },
-  options: {
-    type: Array as PropType<Array<{ value: string; label: string }>>,
-    default: () => []
-  },
-  maxLines: { // 新增的 prop
-    type: Number,
-    default: 5 // 可以根据需求调整默认值
-  },
-  prefix: { // 新增的 prop
-    type: String,
-    default: '@'
-  },
-  placeholder: { // 可选的 prop，用于自定义 placeholder
-    type: String,
-    default: 'Bio'
-  }
-})
+// 定义接口类型
+interface SuggestionItem {
+  value: string
+  label: string
+}
 
-// 使用 JS 方式声明 emits
-const emit = defineEmits(['submit', 'update:modelValue'])
+interface SuggestionsStyle {
+  bottom?: string
+  left?: string
+  width?: string
+}
 
-const showSuggestions = ref(false)
-const activeIndex = ref(0)
-const mentionStart = ref(-1)
+// 优化 props 定义
+const props = defineProps<{
+  modelValue: string
+  suggestions: SuggestionItem[]
+  prefix?: string
+  placeholder?: string
+  maxLines?: number
+}>()
+
+// 添加默认值
+const prefix = computed(() => props.prefix ?? '@')  // 使用 '@' 作为默认值
+const maxLines = computed(() => props.maxLines ?? 5)  // 使用 5 作为默认行数
+
+// 优化 emits 定义
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  'submit': []
+}>()
+
+const showSuggestions = ref<boolean>(false)
+const activeIndex = ref<number>(0)
+const mentionStart = ref<number>(-1)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
-const suggestionsStyle = ref({})
+const suggestionsStyle = ref<SuggestionsStyle>({})
 
-const filteredOptions = computed(() => {
+const filteredOptions = computed<SuggestionItem[]>(() => {
   if (mentionStart.value === -1) return []
-  const searchText = props.modelValue.slice(mentionStart.value + props.prefix.length)
-  return props.options.filter(option =>
+  const searchText = props.modelValue.slice(mentionStart.value + prefix.value.length)
+  return props.suggestions.filter(option =>
     option.value.toLowerCase().includes(searchText.toLowerCase())
   )
 })
 
-function handleInput(event: Event) {
-  const target = event.target as HTMLTextAreaElement
-  const cursorPosition = target.selectionStart
-  const textBeforeCursor = target.value.slice(0, cursorPosition)
-  const lastPrefixIndex = textBeforeCursor.lastIndexOf(props.prefix)
+function handleInput(event: Event): void {
+  const target = event.target as HTMLTextAreaElement;
+  const value = target.value;
+  emit('update:modelValue', value);
 
-  if (
-    lastPrefixIndex !== -1 &&
-    !textBeforeCursor.slice(lastPrefixIndex + props.prefix.length).includes(' ')
-  ) {
-    mentionStart.value = lastPrefixIndex
-    showSuggestions.value = true
-    activeIndex.value = 0
-    updateSuggestionsPosition()
-  } else {
-    showSuggestions.value = false
-    mentionStart.value = -1
+  // 添加检测 @ 符号的逻辑
+  const cursorPosition = target.selectionStart;
+  const textBeforeCursor = value.slice(0, cursorPosition);
+  const lastAtSymbol = textBeforeCursor.lastIndexOf(prefix.value);
+
+  if (lastAtSymbol !== -1) {
+    const textAfterAt = textBeforeCursor.slice(lastAtSymbol);
+    // 检查 @ 后是否紧跟着空格或换行
+    if (!/\s/.test(textAfterAt)) {
+      mentionStart.value = lastAtSymbol;
+      showSuggestions.value = true;
+      activeIndex.value = 0;
+      updateSuggestionsPosition();
+      return;
+    }
   }
 
-  emit('update:modelValue', target.value)
-  adjustTextareaHeight()
+  showSuggestions.value = false;
+  mentionStart.value = -1;
+  adjustTextareaHeight();
 }
 
-function handleKeydown(e: KeyboardEvent) {
+function handleKeydown(e: KeyboardEvent): void {
   // 处理 shift+enter 换行
   if (e.key === 'Enter' && e.shiftKey) {
     return // 允许默认的换行行为
@@ -114,19 +131,50 @@ function handleKeydown(e: KeyboardEvent) {
   }
 }
 
-function selectSuggestion(item: { value: string; label: string }) {
+function selectSuggestion(item: SuggestionItem): void {
   if (!textareaRef.value) return;
 
-  const beforeMention = props.modelValue.slice(0, mentionStart.value)
-  const afterMention = props.modelValue.slice(textareaRef.value.selectionStart)
-  const newValue = `${beforeMention}${props.prefix}${item.value} ${afterMention}`
-  emit('update:modelValue', newValue)
-  showSuggestions.value = false
-  mentionStart.value = -1
-  adjustTextareaHeight()
+  // 使用 textarea 的实际值作为备份
+  const currentValue = textareaRef.value.value || props.modelValue || '';
+
+  // 获取@符号之前的文本
+  const beforeMention = currentValue.slice(0, mentionStart.value);
+
+  // 获取光标位置之后的文本
+  const cursorPosition = textareaRef.value.selectionStart;
+  const afterCursor = currentValue.slice(cursorPosition);
+
+  // 构建新的文本值
+  const insertText = `${prefix.value}${item.value} `;
+  const newValue = beforeMention + insertText + afterCursor;
+
+  // 先设置 textarea 的值
+  textareaRef.value.value = newValue;
+
+  // 更新父组件的值
+  emit('update:modelValue', newValue);
+
+  // 重置状态
+  showSuggestions.value = false;
+  mentionStart.value = -1;
+
+  // 等待 DOM 更新
+  nextTick(() => {
+    if (!textareaRef.value) return;
+
+    // 计算新的光标位置
+    const newCursorPosition = beforeMention.length + insertText.length;
+
+    // 设置光标位置
+    textareaRef.value.selectionStart = newCursorPosition;
+    textareaRef.value.selectionEnd = newCursorPosition;
+    textareaRef.value.focus();
+
+    adjustTextareaHeight();
+  });
 }
 
-function updateSuggestionsPosition() {
+function updateSuggestionsPosition(): void {
   if (!textareaRef.value) return
 
   const textarea = textareaRef.value
@@ -141,7 +189,7 @@ function updateSuggestionsPosition() {
   }
 }
 
-function adjustTextareaHeight() {
+function adjustTextareaHeight(): void {
   const textarea = textareaRef.value
   if (!textarea) return
 
@@ -158,7 +206,7 @@ function adjustTextareaHeight() {
   const totalPadding = paddingTop + paddingBottom + borderTop + borderBottom
 
   // 计算最大高度
-  const maxHeight = lineHeight * props.maxLines + totalPadding
+  const maxHeight = lineHeight * maxLines.value + totalPadding
 
   // 计算新的高度
   const newHeight = props.modelValue.trim() === ''
@@ -192,8 +240,8 @@ watch(() => props.prefix, () => {
   adjustTextareaHeight()
 })
 
-// 添加 focus 方法
-function focus() {
+// 优化 focus 方法
+function focus(): void {
   textareaRef.value?.focus()
 }
 
@@ -211,7 +259,7 @@ defineExpose({
 .textarea {
   width: 100%;
   min-height: calc(1.5em + 20px);
-  /* 1.5em 为行高，20px 为上 padding 总和 */
+  /* 1.5em 为行高，20px 上 padding 总和 */
   padding: 10px;
   border: none;
   outline: none;
