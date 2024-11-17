@@ -1,5 +1,5 @@
 <template>
-  <div class="mention-input w-full h-full flex flex-col border border-base-300 shadow p-2">
+  <div class="mention-input w-full h-full flex flex-col border border-base-300 shadow p-2 gap-4">
     <!-- 提示框 -->
     <div v-if="showSuggestions" class="suggestions" :style="suggestionsStyle">
       <div v-for="(item, index) in filteredOptions" :key="item.value" class="suggestion-item"
@@ -12,11 +12,14 @@
       @input="handleInput" @keydown="handleKeydown" rows="1"></textarea>
     <!-- 扩展工具栏 -->
     <div class="flex items-center justify-between">
-      <div>
-        osoos
-      </div>
+      <!-- 扩展工具栏 -->
+      <slot></slot>
       <!-- 提交按钮 -->
-      <button class="btn btn-primary">提交</button>
+      <button class="btn btn-circle btn-primary btn-sm" @click="handleSubmit">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
@@ -243,6 +246,11 @@ watch(() => props.prefix, () => {
 // 优化 focus 方法
 function focus(): void {
   textareaRef.value?.focus()
+}
+
+// 提交事件
+function handleSubmit(): void {
+  emit('submit')
 }
 
 // 暴露 focus 方法

@@ -9,10 +9,17 @@ import MentionInput from '@/components/MentionInput.vue'
 
 const options = ref([
   { value: 'apple', label: 'Apple' },
-  { value: 'banana', label: 'Banana' }
+  { value: 'banana', label: 'Banana' },
+  { value: 'orange', label: 'Orange' },
+  { value: 'pear', label: 'Pear' },
+  { value: 'peach', label: 'Peach' },
 ])
 
 const inputValue = ref('')
+
+function handleSubmit(): void {
+  console.log('提交事件', inputValue.value)
+}
 </script>
 
 <template>
@@ -24,9 +31,14 @@ const inputValue = ref('')
       <IconEcosystem />
       <DocumentationIcon />
     </div>
-    <div class="flex items-center justify-center gap-4 flex-wrap">
-      <div class="w-80">
-        <MentionInput v-model="inputValue" :suggestions="options" placeholder="请输入内容" />
+    <div class="flex gap-4 flex-wrap">
+      <!-- 输入框 -->
+      <div class="w-[600px]">
+        <MentionInput v-model="inputValue" :suggestions="options" placeholder="请输入内容" @submit="handleSubmit">
+          <div>
+            提示建议 @
+          </div>
+        </MentionInput>
       </div>
     </div>
   </div>
