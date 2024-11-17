@@ -1,0 +1,22 @@
+<script setup lang="ts">
+import { RouterLink, RouterView } from 'vue-router'
+</script>
+
+<template>
+  <div class="flex gap-4">
+    <!-- Header -->
+    <!-- <header class="flex flex-col gap-4 bg-base-100">
+      <RouterLink to="/">Home</RouterLink>
+      <RouterLink to="/about">About</RouterLink>
+    </header> -->
+    <!-- Router view -->
+    <RouterView />
+  </div>
+</template>
+
+<style scoped>
+header {
+  line-height: 1.5;
+  max-height: 100vh;
+}
+</style>
