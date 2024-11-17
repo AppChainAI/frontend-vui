@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import IconCommunity from '@/components/icons/IconCommunity.vue';
 import IconTooling from '@/components/icons/IconTooling.vue'
 import IconSupport from '@/components/icons/IconSupport.vue'
@@ -9,6 +9,7 @@ import MentionInput from '@/components/MentionInput.vue'
 import { toast } from '@/utils/toast'
 import { formatSize, generateUUID } from '@/utils/string'
 import { formatDuration } from '@/utils/time'
+import MarkdownView from '@/components/MarkdownView.vue'
 
 const options = ref([
   { value: 'apple', label: 'Apple' },
@@ -19,6 +20,21 @@ const options = ref([
 ])
 
 const inputValue = ref('')
+
+const markdownContent = ref('')
+
+onMounted(() => {
+  markdownContent.value = `
+  # 标题
+  ## 副标题
+  \`\`\`typescript
+  const a = 1
+  console.log(a)
+  \`\`\`
+  - 解释
+  - 解释
+  `
+})
 
 function handleSubmit(): void {
   console.log('提交事件', inputValue.value)
@@ -36,6 +52,7 @@ function showToast(): void {
   console.log(formatDuration(threeDays))
   toast('提交成功', 'success')
 }
+
 </script>
 
 <template>
@@ -90,6 +107,8 @@ function showToast(): void {
           I have the high ground.
         </div>
       </div>
+      <!-- Markdown -->
+      <MarkdownView :content="markdownContent" />
     </div>
   </div>
 </template>

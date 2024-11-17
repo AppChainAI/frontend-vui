@@ -13,12 +13,16 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "highlight.js": "^11.10.0",
+    "markdown-it": "^14.1.0",
     "pinia": "^2.2.6",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "@tsconfig/node22": "^22.0.0",
+    "@types/markdown-it": "^14.1.2",
     "@types/node": "^22.9.0",
     "@vitejs/plugin-vue": "^5.1.4",
     "@vue/eslint-config-prettier": "^10.1.0",
