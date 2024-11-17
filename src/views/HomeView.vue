@@ -36,7 +36,7 @@ function handleSubmit(): void {
       <div class="w-[600px]">
         <MentionInput v-model="inputValue" :suggestions="options" placeholder="请输入内容" @submit="handleSubmit">
           <div>
-            提示建议 @
+            回车键提交
           </div>
         </MentionInput>
       </div>

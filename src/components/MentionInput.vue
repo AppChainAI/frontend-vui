@@ -14,12 +14,20 @@
     <div class="flex items-center justify-between">
       <!-- 扩展工具栏 -->
       <slot></slot>
-      <!-- 提交按钮 -->
-      <button class="btn btn-circle btn-primary btn-sm" @click="handleSubmit">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-        </svg>
-      </button>
+      <div class="flex items-center gap-2">
+        <!-- 清除内容按钮 -->
+        <button v-if="modelValue" class="btn btn-circle btn-sm" @click="handleClear">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <!-- 提交按钮 -->
+        <button class="btn btn-circle btn-primary btn-sm" :disabled="!modelValue?.trim()" @click="handleSubmit">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -251,6 +259,13 @@ function focus(): void {
 // 提交事件
 function handleSubmit(): void {
   emit('submit')
+}
+
+// 清除内容事件
+function handleClear(): void {
+  if (!textareaRef.value) return
+  textareaRef.value.value = ''
+  emit('update:modelValue', '')
 }
 
 // 暴露 focus 方法
