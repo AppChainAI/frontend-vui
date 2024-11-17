@@ -12,6 +12,8 @@ import { RouterLink, RouterView } from 'vue-router'
     <!-- Router view -->
     <RouterView />
   </div>
+  <!-- Toast 容器 -->
+  <div id="toast" class="toast"></div>
 </template>
 
 <style scoped>
