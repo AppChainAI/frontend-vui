@@ -49,6 +49,8 @@ function showToast(): void {
       <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Dark" value="dark" />
       <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Cupcake"
         value="cupcake" />
+      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="MyTheme"
+        value="mytheme" />
     </div>
     <!-- 图标 -->
     <div class="flex items-center justify-center gap-4 flex-wrap p-4 rounded-box border border-base-300">
@@ -69,8 +71,22 @@ function showToast(): void {
         </MentionInput>
       </div>
       <!-- 按钮,调用 Toast 组件 -->
-      <div class="w-[600px]">
-        <button class="btn btn-primary rounded-btn" @click="showToast">Toast</button>
+      <div class="flex gap-4">
+        <button class="btn" @click="showToast">Button</button>
+        <button class="btn btn-neutral">Neutral</button>
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-accent">Accent</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-link">Link</button>
+      </div>
+      <!-- Chat -->
+      <div class="chat chat-start">
+        <div class="chat-bubble chat-bubble-primary">
+          It's over Anakin,
+          <br />
+          I have the high ground.
+        </div>
       </div>
     </div>
   </div>
