@@ -10,6 +10,7 @@ import { toast } from '@/utils/toast'
 import { formatSize, generateUUID } from '@/utils/string'
 import { formatDuration } from '@/utils/time'
 import MarkdownView from '@/components/MarkdownView.vue'
+import { useDark, useToggle } from '@vueuse/core'
 
 const options = ref([
   { value: 'apple', label: 'Apple' },
@@ -22,6 +23,10 @@ const options = ref([
 const inputValue = ref('')
 
 const markdownContent = ref('')
+
+// 添加暗黑模式控制
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 
 onMounted(() => {
   markdownContent.value = `
@@ -53,24 +58,26 @@ function showToast(): void {
   toast('提交成功', 'success')
 }
 
+function changeTheme(): void {
+  toggleDark()
+}
 </script>
 
 <template>
   <div class="flex flex-col gap-4">
     <!-- 主题切换 -->
-    <div class="join join-vertical rounded-box">
-      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Default"
-        value="default" />
-      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Light"
-        value="light" />
-      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Dark" value="dark" />
-      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="Cupcake"
-        value="cupcake" />
-      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="MyTheme"
-        value="mytheme" />
-      <input type="radio" name="theme-buttons" class="btn theme-controller join-item" aria-label="MyThemeDark"
-        value="mythemeDark" />
-    </div>
+    <label class="flex cursor-pointer gap-2" @click="changeTheme()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5" />
+        <path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4" />
+      </svg>
+      <input type="checkbox" :checked="isDark" class="toggle theme-controller" />
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </label>
     <!-- 图标 -->
     <div class="flex items-center justify-center gap-4 flex-wrap p-4 rounded-box border border-base-300">
       <IconTooling />
