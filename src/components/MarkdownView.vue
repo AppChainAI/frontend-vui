@@ -20,7 +20,9 @@ const md: MarkdownIt = new MarkdownIt({
   highlight: function (str: string, lang: string) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return `<pre class="hljs"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
+        const copyButton = `<button class="copy-button text-blue-500">复制</button>`;
+        const languageTitle = `<div class="flex justify-between items-center min-w-80 code-title bg-base-200 px-4 py-2 text-sm font-mono rounded-t-lg">${lang}${copyButton}</div>`;
+        return `${languageTitle}<pre class="hljs my-0 rounded-t-none"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`;
       } catch (error) {
         console.warn(`语法高亮错误: ${error}`)
       }
