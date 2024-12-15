@@ -4,6 +4,9 @@ import IconCommunity from '@/components/icons/IconCommunity.vue';
 import IconTooling from '@/components/icons/IconTooling.vue'
 import IconSupport from '@/components/icons/IconSupport.vue'
 import IconEcosystem from '@/components/icons/IconEcosystem.vue'
+import IconSearch from '@/components/icons/IconSearch.vue'
+import IconSettingsGear from '@/components/icons/IconSettingsGear.vue'
+
 import DocumentationIcon from '@/components/icons/IconDocumentation.vue'
 import MentionInput from '@/components/MentionInput.vue'
 import { toast } from '@/utils/toast'
@@ -85,6 +88,8 @@ function changeTheme(): void {
       <IconSupport />
       <IconEcosystem />
       <DocumentationIcon />
+      <IconSearch />
+      <IconSettingsGear />
     </div>
     <div class="flex gap-4 flex-wrap">
       <!-- 输入框 -->
